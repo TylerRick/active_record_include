@@ -6,5 +6,5 @@ end
 
 class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
-  include_when_connected NormalizeTextColumns
+  include_when_connected NormalizeTextColumns, recursive: true
 end
