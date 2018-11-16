@@ -15,10 +15,10 @@ module CreatureSelfIdentification
 
   # Not `included do`
   def self.included(base)
-      base.extend ClassMethods
     base.class_eval do
       puts "#{self}: included CreatureSelfIdentification"
-      base.define_identity_methods
+      extend ClassMethods
+      define_identity_methods
     end
   end
 end

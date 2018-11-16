@@ -21,10 +21,12 @@ RSpec.describe ActiveRecordInclude, :aggregate_failures do
       expect(Thing.             ancestors).to_not include(NormalizeTextColumns)
     end
     it do
-      expect(Creature.creature?).to be true
+      expect(Creature).to be_creature
       expect(Creature).to_not respond_to(:animal?)
-      expect(Animal.animal?).to be true
-      expect(Person.person?).to be true
+      expect(Animal).to be_animal
+      expect(Animal).to be_creature
+      expect(Person).to be_person
+      expect(Person).to be_creature
     end
   end
   context 'when the subclasses have been defined but not connected yet' do
