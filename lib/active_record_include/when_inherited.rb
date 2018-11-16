@@ -22,8 +22,12 @@ module ActiveRecordInclude::WhenInherited
     alias_method :include_in_subclasses, :include_when_inherited
 
     def include_recursively(*mods)
-      mods.each {|mod| include mod }
       include_in_subclasses *mods
+      include_all           *mods
+    end
+
+    def include_all(*mods)
+      mods.each {|mod| include mod }
     end
   end
 

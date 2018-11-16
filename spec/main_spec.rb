@@ -22,9 +22,9 @@ RSpec.describe ActiveRecordInclude, :aggregate_failures do
     end
     it do
       expect(Creature.creature?).to be true
-      expect(Creature.new.creature?).to be true
       expect(Creature).to_not respond_to(:animal?)
       expect(Animal.animal?).to be true
+      expect(Person.person?).to be true
     end
   end
   context 'when the subclasses have been defined but not connected yet' do

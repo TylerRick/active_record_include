@@ -3,6 +3,10 @@ require 'active_support/core_ext/object/inclusion'
 module ActiveRecordTextColumns
   extend ActiveSupport::Concern
 
+  included do
+    puts "#{self}: included ActiveRecordTextColumns"
+  end
+
   module ClassMethods
     def text_columns
       columns.
