@@ -13,7 +13,17 @@ RSpec.describe ActiveRecordInclude, :aggregate_failures do
       expect(Animal.            ancestors).to     include(ActiveRecordTextColumns)
       expect(Person.            ancestors).to     include(ActiveRecordTextColumns)
 
+
+      expect(Creature.          ancestors).to     include(CreatureSelfIdentification)
+      expect(Thing.             ancestors).to_not include(CreatureSelfIdentification)
+
       expect(Thing.             ancestors).to_not include(NormalizeTextColumns)
+    end
+    it do
+      expect(Creature.creature?).to be true
+      expect(Creature.new.creature?).to be true
+      expect(Creature).to_not respond_to(:animal?)
+      expect(Animal.animal?).to be true
     end
   end
   context 'when the subclasses have been defined but not connected yet' do

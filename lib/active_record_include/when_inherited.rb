@@ -11,11 +11,17 @@ module ActiveRecordInclude::WhenInherited
   module ClassMethods
     def include_when_inherited(*mods)
       ActiveRecordInclude::WhenInherited.modules_to_load |= mods
+      puts %(ActiveRecordInclude::WhenInherited.modules_to_load=#{(ActiveRecordInclude::WhenInherited.modules_to_load).inspect})
       unless self < OnInherit
         include     OnInherit
       end
     end
     alias_method :include_in_subclasses, :include_when_inherited
+
+    def include_recursively(*mods)
+      mods.each {|mod| include mod }
+      include_in_subclasses *mods
+    end
   end
 
   module OnInherit
@@ -24,6 +30,7 @@ module ActiveRecordInclude::WhenInherited
     module ClassMethods
       private
       def inherited(subclass)
+        puts "OnInherit: inherited(#{subclass})"
         super.tap do
           ActiveRecordInclude::WhenInherited.modules_to_load.each do |mod|
             if subclass < ActiveRecord::Base && !subclass.abstract_class? && !(subclass < mod)

@@ -3,8 +3,13 @@ module CreatureSelfIdentification
 
   included do
     puts "#{self}: included CreatureSelfIdentification"
-    define_method "#{self.model_name.singular}?" do
-      true
+    type = model_name.singular
+    [self, self.singleton_class].each do |klass|
+      klass.class_eval do
+        define_method "#{type}?" do
+          true
+        end
+      end
     end
   end
 end

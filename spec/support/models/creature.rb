@@ -4,5 +4,5 @@ require_dependency 'concerns/creature_self_identification'
 
 class Creature < ApplicationRecord
   include CreatureConcern
-  include CreatureSelfIdentification
+  include_recursively CreatureSelfIdentification
 end
