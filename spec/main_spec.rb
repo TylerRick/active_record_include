@@ -5,18 +5,19 @@ ActiveRecordInclude::WhenConnected.verbose = true
 
 RSpec.describe ActiveRecordInclude, :aggregate_failures do
   context 'when the subclasses have been defined but not connected yet' do
-    it do
+    it 'ActiveRecordTextColumns' do
       expect(ActiveRecord::Base.ancestors).to_not include(ActiveRecordTextColumns)
       expect(ApplicationRecord. ancestors).to     include(ActiveRecordTextColumns)
       expect(Thing.             ancestors).to     include(ActiveRecordTextColumns)
       expect(Creature.          ancestors).to     include(ActiveRecordTextColumns)
       expect(Animal.            ancestors).to     include(ActiveRecordTextColumns)
       expect(Person.            ancestors).to     include(ActiveRecordTextColumns)
-
-
+    end
+    it 'CreatureSelfIdentification' do
       expect(Creature.          ancestors).to     include(CreatureSelfIdentification)
       expect(Thing.             ancestors).to_not include(CreatureSelfIdentification)
-
+    end
+    it 'nothing includes NormalizeTextColumns yet' do
       expect(Thing.             ancestors).to_not include(NormalizeTextColumns)
     end
     it do

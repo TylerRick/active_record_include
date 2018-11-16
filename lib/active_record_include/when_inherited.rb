@@ -5,13 +5,16 @@ module ActiveRecordInclude::WhenInherited
   @@verbose = false
   @@verbose = true
 
-  mattr_accessor :modules_to_load, instance_accessor: false
-  @@modules_to_load = []
-
   module ClassMethods
     def include_when_inherited(*mods)
-      ActiveRecordInclude::WhenInherited.modules_to_load |= mods
-      puts %(ActiveRecordInclude::WhenInherited.modules_to_load=#{(ActiveRecordInclude::WhenInherited.modules_to_load).inspect})
+      self.class_eval do
+        unless    defined?(modules_to_include_when_inherited)
+          class_attribute :modules_to_include_when_inherited
+        end
+      end
+      #puts %(#{self}.modules_to_include_when_inherited=#{self.modules_to_include_when_inherited.inspect})
+      self.modules_to_include_when_inherited ||= []
+      self.modules_to_include_when_inherited  |= mods
       unless self < OnInherit
         include     OnInherit
       end
@@ -30,10 +33,9 @@ module ActiveRecordInclude::WhenInherited
     module ClassMethods
       private
       def inherited(subclass)
-        puts "OnInherit: inherited(#{subclass})"
         super.tap do
-          ActiveRecordInclude::WhenInherited.modules_to_load.each do |mod|
-            if subclass < ActiveRecord::Base && !subclass.abstract_class? && !(subclass < mod)
+          subclass.modules_to_include_when_inherited.each do |mod|
+            if subclass < ActiveRecord::Base && !subclass.abstract_class? #&& !(subclass < mod)
               puts "Including #{mod} into #{subclass}" if ActiveRecordInclude::WhenInherited.verbose
               subclass.class_eval do
                 include mod
