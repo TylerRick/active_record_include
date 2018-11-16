@@ -5,7 +5,7 @@ module ActiveRecordInclude::WhenInherited
   @@verbose = false
 
   module ClassMethods
-    def include_when_inherited(*mods)
+    def include_when_inherited(mod)
       self.class_eval do
         unless    defined?(modules_to_include_when_inherited)
           class_attribute :modules_to_include_when_inherited
@@ -13,20 +13,16 @@ module ActiveRecordInclude::WhenInherited
       end
       #puts %(#{self}.modules_to_include_when_inherited=#{self.modules_to_include_when_inherited.inspect})
       self.modules_to_include_when_inherited ||= []
-      self.modules_to_include_when_inherited  |= mods
+      self.modules_to_include_when_inherited  |= [mod]
       unless self < OnInherit
         include     OnInherit
       end
     end
     alias_method :include_in_subclasses, :include_when_inherited
 
-    def include_recursively(*mods)
-      include_all           *mods
-      include_in_subclasses *mods
-    end
-
-    def include_all(*mods)
-      mods.each {|mod| include mod }
+    def include_recursively(mod)
+      include               mod
+      include_in_subclasses mod
     end
   end
 

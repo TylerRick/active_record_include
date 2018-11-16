@@ -5,15 +5,18 @@ module ActiveRecordInclude::WhenConnected
   @@verbose = false
 
   module ClassMethods
-    def include_when_connected(*mods, **options)
+    def include_when_connected(mod, **options)
       self.class_eval do
         unless    defined?(modules_to_include_when_connected)
           class_attribute :modules_to_include_when_connected
         end
+        unless    defined?(include_when_connected_options)
+          class_attribute :include_when_connected_options
+        end
       end
       #puts %(#{self}.modules_to_include_when_connected=#{self.modules_to_include_when_connected.inspect})
       self.modules_to_include_when_connected ||= []
-      self.modules_to_include_when_connected  |= mods
+      self.modules_to_include_when_connected  |= [mod]
       unless self < OnConnect
         include     OnConnect
       end
