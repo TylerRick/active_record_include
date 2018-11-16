@@ -4,7 +4,7 @@ module ActiveRecordTextColumns
   extend ActiveSupport::Concern
 
   included do
-    puts "#{self}: included ActiveRecordTextColumns"
+    puts "#{self}: included ActiveRecordTextColumns" if ActiveRecordInclude::WhenInherited.verbose
   end
 
   module ClassMethods

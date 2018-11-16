@@ -16,7 +16,7 @@ module CreatureSelfIdentification
   # Not `included do`
   def self.included(base)
     base.class_eval do
-      puts "#{self}: included CreatureSelfIdentification"
+      puts "#{self}: included CreatureSelfIdentification" if ActiveRecordInclude::WhenInherited.verbose
       extend ClassMethods
       define_identity_methods
     end

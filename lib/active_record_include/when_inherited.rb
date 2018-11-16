@@ -3,7 +3,6 @@ module ActiveRecordInclude::WhenInherited
 
   mattr_accessor :verbose, instance_accessor: false
   @@verbose = false
-  @@verbose = true
 
   module ClassMethods
     def include_when_inherited(*mods)

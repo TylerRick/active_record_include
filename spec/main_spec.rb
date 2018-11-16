@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-ActiveRecordInclude::WhenInherited.verbose = true
-ActiveRecordInclude::WhenConnected.verbose = true
+#ActiveRecordInclude::WhenInherited.verbose = true
+#ActiveRecordInclude::WhenConnected.verbose = true
 
 RSpec.describe ActiveRecordInclude, :aggregate_failures do
   context 'when the subclasses have been defined but not connected yet' do
@@ -21,6 +21,7 @@ RSpec.describe ActiveRecordInclude, :aggregate_failures do
       expect(Thing.             ancestors).to_not include(NormalizeTextColumns)
     end
     it do
+      expect(ApplicationRecord).to_not respond_to(:animal?)
       expect(Creature).to be_creature
       expect(Creature).to_not respond_to(:animal?)
       expect(Animal).to be_animal
