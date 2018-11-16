@@ -39,7 +39,7 @@ module ActiveRecordInclude::WhenInherited
       def inherited(subclass)
         super.tap do
           subclass.modules_to_include_when_inherited.each do |mod|
-            if subclass < ActiveRecord::Base && !subclass.abstract_class? #&& !(subclass < mod)
+            if subclass < ActiveRecord::Base && !subclass.abstract_class?
               puts "Including #{mod} into #{subclass}" if ActiveRecordInclude::WhenInherited.verbose
               subclass.class_eval do
                 include mod

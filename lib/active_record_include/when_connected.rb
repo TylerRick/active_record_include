@@ -4,12 +4,16 @@ module ActiveRecordInclude::WhenConnected
   mattr_accessor :verbose, instance_accessor: false
   @@verbose = false
 
-  mattr_accessor :modules_to_load, instance_accessor: false
-  @@modules_to_load = []
-
   module ClassMethods
     def include_when_connected(*mods, **options)
-      ActiveRecordInclude::WhenConnected.modules_to_load |= mods
+      self.class_eval do
+        unless    defined?(modules_to_include_when_connected)
+          class_attribute :modules_to_include_when_connected
+        end
+      end
+      #puts %(#{self}.modules_to_include_when_connected=#{self.modules_to_include_when_connected.inspect})
+      self.modules_to_include_when_connected ||= []
+      self.modules_to_include_when_connected  |= mods
       unless self < OnConnect
         include     OnConnect
       end
@@ -22,7 +26,7 @@ module ActiveRecordInclude::WhenConnected
     module ClassMethods
     def connection(*)
       super.tap do
-        ActiveRecordInclude::WhenConnected.modules_to_load.each do |mod|
+        self.modules_to_include_when_connected.each do |mod|
           if self < ActiveRecord::Base && !self.abstract_class? && !(self < mod)
             puts "Including #{mod} into #{self}" if ActiveRecordInclude::WhenConnected.verbose
             class_eval do
