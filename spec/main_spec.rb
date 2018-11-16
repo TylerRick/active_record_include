@@ -39,15 +39,24 @@ RSpec.describe ActiveRecordInclude, :aggregate_failures do
   end
   context 'when the model has connected' do
     before { Thing.connection }
+    before { Creature.connection }
     before { Animal.connection }
     before { Person.connection }
     it 'NormalizeTextColumns' do
       expect(ActiveRecord::Base.ancestors).to_not include(NormalizeTextColumns)
       expect(ApplicationRecord. ancestors).to_not include(NormalizeTextColumns)
       expect(Thing.             ancestors).to     include(NormalizeTextColumns)
-      expect(Creature.          ancestors).to_not include(NormalizeTextColumns)
+      expect(Creature.          ancestors).to     include(NormalizeTextColumns)
       expect(Animal.            ancestors).to     include(NormalizeTextColumns)
       expect(Person.            ancestors).to     include(NormalizeTextColumns)
+
+      expect(ActiveRecord::Base                                        ).to_not respond_to(:modules_already_included_when_connected)
+      expect(ApplicationRecord                                         ).to_not respond_to(:modules_already_included_when_connected)
+      expect(Thing.             modules_already_included_when_connected).to     include(NormalizeTextColumns)
+      expect(Creature.          modules_already_included_when_connected).to     include(NormalizeTextColumns)
+      expect(Animal.            modules_already_included_when_connected).to     include(NormalizeTextColumns)
+      expect(Person.            modules_already_included_when_connected).to     include(NormalizeTextColumns)
+
       person = Person.new
       person.name = ' Seuss '
       expect(person.name).to eq 'Seuss'
@@ -57,17 +66,25 @@ RSpec.describe ActiveRecordInclude, :aggregate_failures do
       expect(ApplicationRecord. ancestors).to_not include(TestWhenConnected)
       expect(Thing.             ancestors).to_not include(TestWhenConnected)
       expect(Creature.          ancestors).to     include(TestWhenConnected)
+      # inherited from Creature:
       expect(Animal.            ancestors).to     include(TestWhenConnected)
       expect(Person.            ancestors).to     include(TestWhenConnected)
-
-      expect(Creature.          was_included).to     include(TestWhenConnectedRecursive)
-      expect(Animal.            was_included).to     include(TestWhenConnectedRecursive)
-      expect(Person.            was_included).to     include(TestWhenConnectedRecursive)
 
       expect(Creature.          was_included).to     include(TestWhenConnected)
       expect(Animal.            was_included).to_not include(TestWhenConnected)
       expect(Person.            was_included).to_not include(TestWhenConnected)
+    end
+    it 'TestWhenConnectedRecursive' do
+      expect(ActiveRecord::Base.ancestors).to_not include(TestWhenConnectedRecursive)
+      expect(ApplicationRecord. ancestors).to_not include(TestWhenConnectedRecursive)
+      expect(Thing.             ancestors).to_not include(TestWhenConnectedRecursive)
+      expect(Creature.          ancestors).to     include(TestWhenConnectedRecursive)
+      expect(Animal.            ancestors).to     include(TestWhenConnectedRecursive)
+      expect(Person.            ancestors).to     include(TestWhenConnectedRecursive)
 
+      expect(Creature.          was_included).to  include(TestWhenConnectedRecursive)
+      expect(Animal.            was_included).to  include(TestWhenConnectedRecursive)
+      expect(Person.            was_included).to  include(TestWhenConnectedRecursive)
     end
   end
 end

@@ -4,7 +4,7 @@ module LogWhenIncluded
   module ClassMethods
     def log_included(base, mod)
       base.class_eval do
-        puts "#{self}: included #{mod}"
+        #puts "#{self}: included #{mod}"
         self.singleton_class.class_eval do
           attr_accessor :was_included
         end
@@ -19,7 +19,7 @@ module TestWhenConnected
   include LogWhenIncluded
   def self.included(base)
     log_included base, self
-    puts %(#{base}.was_included=#{(base.was_included).inspect})
+    #puts %(#{base}.was_included=#{base.was_included.inspect})
   end
 end
 

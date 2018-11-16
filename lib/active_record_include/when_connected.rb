@@ -10,13 +10,13 @@ module ActiveRecordInclude::WhenConnected
         unless    defined?(modules_to_include_when_connected)
           class_attribute :modules_to_include_when_connected
         end
-        unless    defined?(include_when_connected_options)
-          class_attribute :include_when_connected_options
-        end
       end
       #puts %(#{self}.modules_to_include_when_connected=#{self.modules_to_include_when_connected.inspect})
+      unless options[:recursive]
+        options[:into_classes] ||= [self]
+      end
       self.modules_to_include_when_connected ||= []
-      self.modules_to_include_when_connected  |= [mod]
+      self.modules_to_include_when_connected  |= [{mod => options}]
       unless self < OnConnect
         include     OnConnect
       end
@@ -29,13 +29,30 @@ module ActiveRecordInclude::WhenConnected
     module ClassMethods
     def connection(*)
       super.tap do
-        self.modules_to_include_when_connected.each do |mod|
-          if self < ActiveRecord::Base && !self.abstract_class? && !(self < mod)
+        self.modules_to_include_when_connected.each do |config|
+        config.each do |(mod, options)|
+          self.singleton_class.class_eval do
+            attr_accessor :modules_already_included_when_connected
+          end
+          self.modules_already_included_when_connected ||= []
+          next if self.modules_already_included_when_connected.include?(mod)
+
+          match = (
+            if options[:recursive]
+              self < ActiveRecord::Base && !self.abstract_class?
+            else
+              self.in? options[:into_classes]
+            end
+          )
+          #puts %(Include #{mod} into #{self} (#{options.inspect})? #{match})
+          if match
             puts "Including #{mod} into #{self}" if ActiveRecordInclude::WhenConnected.verbose
+            modules_already_included_when_connected << mod
             class_eval do
               include mod
             end
           end
+        end
         end
       end
     end
