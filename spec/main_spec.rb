@@ -52,13 +52,22 @@ RSpec.describe ActiveRecordInclude, :aggregate_failures do
       person.name = ' Seuss '
       expect(person.name).to eq 'Seuss'
     end
-    it 'NormalizeTextColumns' do
+    it 'TestWhenConnected' do
       expect(ActiveRecord::Base.ancestors).to_not include(TestWhenConnected)
       expect(ApplicationRecord. ancestors).to_not include(TestWhenConnected)
       expect(Thing.             ancestors).to_not include(TestWhenConnected)
       expect(Creature.          ancestors).to     include(TestWhenConnected)
       expect(Animal.            ancestors).to     include(TestWhenConnected)
       expect(Person.            ancestors).to     include(TestWhenConnected)
+
+      expect(Creature.          was_included).to     include(TestWhenConnectedRecursive)
+      expect(Animal.            was_included).to     include(TestWhenConnectedRecursive)
+      expect(Person.            was_included).to     include(TestWhenConnectedRecursive)
+
+      expect(Creature.          was_included).to     include(TestWhenConnected)
+      expect(Animal.            was_included).to_not include(TestWhenConnected)
+      expect(Person.            was_included).to_not include(TestWhenConnected)
+
     end
   end
 end

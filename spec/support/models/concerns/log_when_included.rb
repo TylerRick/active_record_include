@@ -5,12 +5,11 @@ module LogWhenIncluded
     def log_included(base, mod)
       base.class_eval do
         puts "#{self}: included #{mod}"
-        singleton_class.class_eval do
+        self.singleton_class.class_eval do
           attr_accessor :was_included
         end
-        was_included ||= []
-        was_included << mod
-        puts %(was_included=#{(was_included).inspect})
+        self.was_included ||= []
+        self.was_included << mod
       end
     end
   end
@@ -20,6 +19,7 @@ module TestWhenConnected
   include LogWhenIncluded
   def self.included(base)
     log_included base, self
+    puts %(#{base}.was_included=#{(base.was_included).inspect})
   end
 end
 
