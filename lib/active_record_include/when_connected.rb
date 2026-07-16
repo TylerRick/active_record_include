@@ -5,6 +5,9 @@ module ActiveRecordInclude::WhenConnected
   @@verbose = false
 
   module ClassMethods
+    # recursive: default is true.
+    # only: (into_classes:)
+    # except:
     def include_when_connected(mod, **options)
       self.class_eval do
         unless    defined?(modules_to_include_when_connected)
